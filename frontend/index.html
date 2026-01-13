@@ -1,1 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop Acc Game Việt</title>
+  <style>
+    body {font-family:sans-serif; background:#f5f5f5; color:#333; margin:0; padding:0;}
+    header {background:#111; color:#fff; text-align:center; padding:20px;}
+    .container {display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; padding:20px;}
+    .card {background:#fff; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,.1); padding:15px;}
+    .card img {width:100%; border-radius:8px;}
+    .price {color:#e74c3c; font-weight:bold;}
+    .btn {display:inline-block; background:#007bff; color:white; padding:10px 15px; border-radius:6px; text-decoration:none;}
+    .btn:hover {background:#0056b3;}
+    section {background:#fff; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,.1); padding:20px; margin:20px;}
+    form {display:flex; flex-direction:column; gap:10px; max-width:400px;}
+    input, textarea, select {padding:10px; border-radius:6px; border:1px solid #ccc;}
+    button {background:#28a745; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer;}
+    button:hover {background:#218838;}
+    #result {margin-top:15px; font-weight:bold;}
+    footer {text-align:center; padding:20px; background:#111; color:white; margin-top:20px;}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Shop Acc Game Việt</h1>
+    <p>Liên hệ Zalo: 09xx.xxx.xxx</p>
+  </header>
 
+  <div class="container">
+    <div class="card">
+      <img src="https://via.placeholder.com/250x150.png?text=Acc+Li%C3%AAn+Qu%C3%A2n" alt="Acc Liên Quân">
+      <h3>Acc Liên Quân Rank Cao</h3>
+      <p>Skin: 50+ | Tướng: 90+ | Rank: Cao Thủ</p>
+      <p class="price">Giá: 250.000đ</p>
+      <a class="btn" href="#payment">Mua ngay</a>
+    </div>
+    <div class="card">
+      <img src="https://via.placeholder.com/250x150.png?text=Acc+Free+Fire" alt="Acc Free Fire">
+      <h3>Acc Free Fire VIP</h3>
+      <p>Skin súng: full | Pet: đủ | Level: 70+</p>
+      <p class="price">Giá: 300.000đ</p>
+      <a class="btn" href="#payment">Mua ngay</a>
+    </div>
+  </div>
+
+  <section id="payment">
+    <h2>Thanh toán & Nhận acc</h2>
+    <p>Quét QR ZaloPay bên dưới để thanh toán:</p>
+    <img src="https://via.placeholder.com/200x200.png?text=QR+ZaloPay" alt="QR ZaloPay">
+
+    <p>Sau khi thanh toán, vui lòng nhập mã giao dịch để nhận acc:</p>
+
+    <form id="buyForm">
+      <label>Chọn sản phẩm:</label>
+      <select id="product">
+        <option value="lienquan">Acc Liên Quân</option>
+        <option value="freefire">Acc Free Fire</option>
+      </select>
+
+      <label>Mã giao dịch / Biên lai:</label>
+      <input type="text" id="transaction" required>
+
+      <button type="submit">Nhận Acc</button>
+    </form>
+
+    <div id="result"></div>
+  </section>
+
+  <footer>
+    <p>© 2026 ShopAccGame. All rights reserved.</p>
+  </footer>
+
+  <script>
+  document.getElementById('buyForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const product = document.getElementById('product').value;
+    const transaction = document.getElementById('transaction').value;
+
+    const res = await fetch('https://YOUR_RENDER_URL.onrender.com/get-acc', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product, transaction })
+    });
+
+    const data = await res.json();
+
+    if (data.error) {
+      document.getElementById('result').innerText = data.error;
+    } else {
+      document.getElementById('result').innerText = `User: ${data.acc.user}, Pass: ${data.acc.pass}`;
+    }
+  });
+  </script>
+</body>
+</html>
