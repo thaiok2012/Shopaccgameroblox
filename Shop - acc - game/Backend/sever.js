@@ -1,39 +1,44 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const fs = require('fs');
-
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
 const app = express();
-app.use(cors());
-app.use(bodyParser.json());
+const port = process.env.PORT || 3000;
 
-const PORT = process.env.PORT || 3000;
+// Middleware để parse JSON nếu cần
+app.use(express.json());
 
-// Load acc từ file JSON
-let accList = JSON.parse(fs.readFileSync('acc.json'));
+// Path file chứa acc
+const accFile = path.join(__dirname, "acc.json");
 
-// API trả acc
-app.post('/get-acc', (req, res) => {
-  const { product, transaction } = req.body;
-
-  // Thêm validate transaction nếu cần
-  if (!transaction || transaction.length < 3) {
-    return res.status(400).json({ error: 'Vui lòng nhập mã giao dịch hợp lệ!' });
-  }
-
-  // Kiểm tra sản phẩm tồn tại
-  if (!accList[product] || accList[product].length === 0) {
-    return res.status(400).json({ error: 'Hết acc cho sản phẩm này!' });
-  }
-
-  // Lấy 1 acc duy nhất
-  const acc = accList[product].shift();
-
-  // Lưu file lại
-  fs.writeFileSync('acc.json', JSON.stringify(accList, null, 2));
-
-  // Trả acc cho khách
-  res.json({ acc });
+// Route hiển thị thông báo homepage
+app.get("/", (req, res) => {
+  res.send("Shop acc game Roblox chạy thành công! Truy cập /get-acc để lấy acc.");
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// API trả acc
+app.get("/get-acc", (req, res) => {
+  try {
+    const rawData = fs.readFileSync(accFile, "utf8");
+    const accList = JSON.parse(rawData);
+
+    if (accList.length === 0) {
+      return res.json({ success: false, message: "Hết acc rồi!" });
+    }
+
+    // Lấy acc đầu tiên
+    const account = accList.shift();
+
+    // Lưu lại acc còn lại
+    fs.writeFileSync(accFile, JSON.stringify(accList, null, 2));
+
+    res.json({ success: true, account });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Lỗi server" });
+  }
+});
+
+// Start server
+app.listen(port, () => {
+  console.log(`Server đang chạy tại http://localhost:${port}`);
+});
