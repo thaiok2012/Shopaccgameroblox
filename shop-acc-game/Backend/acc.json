@@ -1,0 +1,11 @@
+
+{
+  "lienquan": [
+    {"user":"lq_user1","pass":"pass1"},
+    {"user":"lq_user2","pass":"pass2"}
+  ],
+  "freefire": [
+    {"user":"ff_user1","pass":"pass1"},
+    {"user":"ff_user2","pass":"pass2"}
+  ]
+}
